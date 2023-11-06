@@ -12,3 +12,8 @@ __Documents__
 __Prerequisites__
 - [Conceptual Design](https://docs.google.com/document/d/1e4droZp7sjnKO-tT3nldNfSzah376FP7LWPOwOjlwXg/edit?usp=sharing)
 - [Class Diagram](https://drive.google.com/file/d/1EEIFbZqVw0cQUR_jMdZQO7QMpAExRx8j/view?usp=sharing)
+
+***
+#### Contributors
+- Adam George (ag990@exeter.ac.uk, 720022715)
+- Ben Ellison (be286@exeter.ac.uk, 720052156)
