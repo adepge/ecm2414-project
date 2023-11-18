@@ -1,4 +1,5 @@
 import java.io.File;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.io.IOException;
 
@@ -18,7 +19,7 @@ public class CardGameClass implements CardGame
     private DeckClass[] decks;
     private boolean playerWon;
 
-    public CardGameClass(int playerCount, String deckFileName) throws IOException {
+    public CardGameClass(int playerCount, String deckFileName) throws IOException, InterruptedException{
         playerWon = false;
         this.playerCount = playerCount;
         players = new PlayerClass[playerCount];
@@ -48,21 +49,37 @@ public class CardGameClass implements CardGame
         if (myReader.hasNextLine()) {
             throw new InvalidPackException("Pack length is too long"); // When text file lines > 8n
         }
+//        System.out.println(Arrays.toString(placeholder));
         for (int i = 0; i < 8 * playerCount; i++) {
             pack[i] = new Card(placeholder[i], i);
         }
+//        for (int i = 0; i < 8 * playerCount; i++) {
+//            System.out.println(pack[i].getValue());
+//        }
         return pack;
     }
 
-    private void distributeCards(Card[] pack) {
-        this.decks = new DeckClass[playerCount];
+    private void distributeCards(Card[] pack) throws InterruptedException{
+        decks = new DeckClass[playerCount];
         for (int i=0;i<playerCount;i++){
-            decks[i] = new DeckClass();
-        }
+            DeckClass deckObject = new DeckClass(i);
+            decks[i] = deckObject;
+         }
 
         for (int i = 0; i < 4 * playerCount; i++) {
+            System.out.println(pack[i].getValue());
             decks[i % playerCount].addCard(pack[i]);
         }
+
+
+//        for (int i=0;i<playerCount;i++) {
+//            System.out.println("Deck "+ i);
+//            DeckClass sampleDeck = decks[i];
+//            for (int j = 0; j < playerCount; j++) {
+//                System.out.println(sampleDeck.removeCard().getValue());
+//            }
+//        }
+
         for (int i = 4 * playerCount; i < 8 * playerCount; i++) { // i starts from index after all cards have been distributed to players hand
             players[i % playerCount].addToHand(pack[i], i / playerCount - 4);
         }
@@ -80,33 +97,57 @@ public class CardGameClass implements CardGame
         deckInput.close();
 
         CardGameClass cardGame = new CardGameClass(4,deckFile);
-
+//        Thread[] playerThreads = new Thread[cardGame.playerCount];
         for (int i = 0; i<cardGame.playerCount; i++){
             int n = i;
             Thread playerThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-
+//                    for (int i = 0;i<cardGame.playerCount;i++){
+//                        try {
+//                            cardGame.decks[i].logDeck();
+//                        } catch (IOException e){
+//                            e.printStackTrace();
+//                        }
+//                    }
+                        try {
+                            cardGame.decks[n].logDeck();
+                        } catch (IOException e){
+                            e.printStackTrace();
+                        }
                     while(!Thread.currentThread().isInterrupted() && !cardGame.playerWon){
-                        System.out.println(String.valueOf(cardGame.decks[n]));
+
+
+
                         if (cardGame.players[n].checkWin()){
                             cardGame.playerWon = true;
                             Thread.currentThread().interrupt();
                         }
-                        Card discardCard = cardGame.players[n].draw(cardGame.decks[n].removeCard());
-                        cardGame.decks[(n + 1) % cardGame.playerCount].addCard(discardCard);
-                        try{
-                            cardGame.players[n].logTurn(cardGame.playerCount);
-                        } catch (IOException e){
-                            e.printStackTrace();
-                            System.out.println("Unable to write to text file");
-                        }
+//                        if (cardGame.decks[n].checkForTurn()) {
+                            Card discardCard = cardGame.players[n].draw(cardGame.decks[n].removeCard());
+                            try {
+                                cardGame.decks[(n + 1) % cardGame.playerCount].addCard(discardCard);
+                            } catch (InterruptedException e) {
+                                System.out.println("GAME END");
+                            }
+                            try {
+                                cardGame.players[n].logTurn(cardGame.playerCount);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                System.out.println("Unable to write to text file");
+                            }
+//                        } else{
+//                            System.out.println("player " + (n+1) + " cannot play" );
+//                        }
                     }
 
                 }
             });
-            playerThread.start();
+
             playerThread.join();
+            playerThread.start();
+
         }
+
     }
 }

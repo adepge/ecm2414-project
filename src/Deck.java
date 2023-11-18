@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 
 /**
@@ -10,13 +11,10 @@ import java.util.concurrent.ArrayBlockingQueue;
  */
 public interface Deck{
 
-        /**
-         *
-         * @return
-         */
         int getIndex();
-        void addCard(Card c);
+        void addCard(Card c) throws InterruptedException;
+        boolean checkForTurn();
         Card removeCard();
         void clearContents(Card c);
-        String logDeck();
+        void logDeck() throws IOException;
 }
