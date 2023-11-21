@@ -12,9 +12,9 @@ import java.util.concurrent.ArrayBlockingQueue;
 public interface Deck{
 
         int getIndex();
-        void addCard(Card c) throws InterruptedException;
+        boolean addCard(Card c);
         boolean checkForTurn();
-        Card removeCard();
+        Card removeCard() throws PackThresholdException;
         void clearContents(Card c);
-        void logDeck() throws IOException;
+        boolean logDeck(boolean rollback) throws IOException;
 }

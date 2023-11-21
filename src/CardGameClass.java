@@ -1,5 +1,4 @@
 import java.io.File;
-import java.util.Arrays;
 import java.util.Scanner;
 import java.io.IOException;
 
@@ -17,10 +16,10 @@ public class CardGameClass implements CardGame
     int playerCount;
     private PlayerClass[] players;
     private DeckClass[] decks;
-    private boolean playerWon;
+    private int playerWon;
 
     public CardGameClass(int playerCount, String deckFileName) throws IOException, InterruptedException{
-        playerWon = false;
+        playerWon = 0;
         this.playerCount = playerCount;
         players = new PlayerClass[playerCount];
         for (int i = 0; i < playerCount; i++) {
@@ -59,7 +58,7 @@ public class CardGameClass implements CardGame
         return pack;
     }
 
-    private void distributeCards(Card[] pack) throws InterruptedException{
+    private void distributeCards(Card[] pack) throws InterruptedException, IOException{
         decks = new DeckClass[playerCount];
         for (int i=0;i<playerCount;i++){
             DeckClass deckObject = new DeckClass(i);
@@ -103,6 +102,7 @@ public class CardGameClass implements CardGame
             Thread playerThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
+
 //                    for (int i = 0;i<cardGame.playerCount;i++){
 //                        try {
 //                            cardGame.decks[i].logDeck();
@@ -110,44 +110,66 @@ public class CardGameClass implements CardGame
 //                            e.printStackTrace();
 //                        }
 //                    }
-                        try {
-                            cardGame.decks[n].logDeck();
-                        } catch (IOException e){
-                            e.printStackTrace();
+                    //Checks that the thread isn't interrupted and that nobody has won the game. if both are true, the while loop begins
+                    while (cardGame.playerWon <= 0) {
+                        Card discardCard;
+                        cardGame.players[n].turnTaken = false;
+                        //Checks if the player meets the winning conditions
+                        if (cardGame.players[n].checkWin()) {
+                            //Tells the game that this player is the winner
+                            cardGame.playerWon = n + 1;
+                            cardGame.players[n].turnTaken = true;
+                            System.out.println("player " + (cardGame.playerWon) + " wins");
                         }
-                    while(!Thread.currentThread().isInterrupted() && !cardGame.playerWon){
+                        //Checks that no player has won
+                        if (cardGame.playerWon <= 0) {
+                            //Tells the player to draw a card from their deck, and choose which card to discard
+                            try {
+                                discardCard = cardGame.players[n].draw(cardGame.decks[n].removeCard());
+                                //Tells the player to try to discard to the discard deck. If this fails, enter a while loop
 
-
-
-                        if (cardGame.players[n].checkWin()){
-                            cardGame.playerWon = true;
-                            Thread.currentThread().interrupt();
+                                while (cardGame.playerWon <= 0 && !cardGame.players[n].turnTaken) {
+                                    if (!cardGame.decks[(n + 1) % cardGame.playerCount].addCard(discardCard)) {
+                                        cardGame.players[n].turnTaken = false;
+//                                        System.out.println("player " + (n+1) + " is stuck");
+                                    } else {
+                                        cardGame.players[n].turnTaken = true;
+                                    }
+                                }
+                                //Logs player's turn to their txt file.
+                                if (cardGame.players[n].turnTaken && cardGame.playerWon<=0) {
+                                    try {
+                                        cardGame.players[n].logTurn(cardGame.playerCount);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                        System.out.println("Unable to write to text file");
+                                    } catch (NullPointerException ignored) {
+                                    }
+                                }
+                            } catch (PackThresholdException ignored) {}
                         }
-//                        if (cardGame.decks[n].checkForTurn()) {
-                            Card discardCard = cardGame.players[n].draw(cardGame.decks[n].removeCard());
-                            try {
-                                cardGame.decks[(n + 1) % cardGame.playerCount].addCard(discardCard);
-                            } catch (InterruptedException e) {
-                                System.out.println("GAME END");
-                            }
-                            try {
-                                cardGame.players[n].logTurn(cardGame.playerCount);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                System.out.println("Unable to write to text file");
-                            }
-//                        } else{
-//                            System.out.println("player " + (n+1) + " cannot play" );
-//                        }
                     }
-
+                    try {
+                        if (!cardGame.decks[n].logDeck(false)) {
+                            if (cardGame.players[n].turnTaken){
+                                cardGame.decks[n % cardGame.playerCount + 1].logDeck(true);
+                            } else {
+                                cardGame.players[n].logTurn(cardGame.playerCount);
+                            }
+                            cardGame.players[n].rollback();
+                            cardGame.decks[n].logDeck(true);
+                        } else {
+                            cardGame.players[n].logTurn(cardGame.playerCount);
+                        }
+                        cardGame.players[n].logWin(cardGame.playerWon);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        System.out.println("failed to log win");
+                    }
                 }
             });
-
             playerThread.join();
             playerThread.start();
-
         }
-
     }
 }

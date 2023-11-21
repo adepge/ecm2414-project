@@ -23,16 +23,17 @@ public boolean checkForTurn(){
     return true;
 }
 
-    public void addCard(Card c){
-        contents.add(c);
+    public boolean addCard(Card c){
+        return contents.offer(c);
     }
 
     public  Card removeCard(){return contents.poll();};
 
     public void clearContents(Card c){contents.clear();};
 
-    public void logDeck() throws IOException {
+    public boolean logDeck(boolean rollback) throws IOException {
         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("deck" + index + "_output.txt"));
         out.writeObject("deck" + index + " contents: " + contents.toString());
+        return true;
     }
 }

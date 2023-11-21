@@ -41,5 +41,8 @@ public interface Player {
      * @param playerCount total number of players in game
      * @throws IOException file error
      */
+    void rollback();
     void logTurn(int playerCount) throws IOException;
+
+    void logWin(int winningPlayer) throws IOException;
 }
