@@ -48,17 +48,13 @@ public class CardGameClass implements CardGame
         if (myReader.hasNextLine()) {
             throw new InvalidPackException("Pack length is too long"); // When text file lines > 8n
         }
-//        System.out.println(Arrays.toString(placeholder));
         for (int i = 0; i < 8 * playerCount; i++) {
             pack[i] = new Card(placeholder[i], i);
         }
-//        for (int i = 0; i < 8 * playerCount; i++) {
-//            System.out.println(pack[i].getValue());
-//        }
         return pack;
     }
 
-    private void distributeCards(Card[] pack) throws InterruptedException, IOException{
+    private void distributeCards(Card[] pack) throws IOException{
         decks = new DeckClass[playerCount];
         for (int i=0;i<playerCount;i++){
             DeckClass deckObject = new DeckClass(i);
@@ -66,29 +62,18 @@ public class CardGameClass implements CardGame
          }
 
         for (int i = 0; i < 4 * playerCount; i++) {
-            System.out.println(pack[i].getValue());
             decks[i % playerCount].addCard(pack[i]);
         }
-
-
-//        for (int i=0;i<playerCount;i++) {
-//            System.out.println("Deck "+ i);
-//            DeckClass sampleDeck = decks[i];
-//            for (int j = 0; j < playerCount; j++) {
-//                System.out.println(sampleDeck.removeCard().getValue());
-//            }
-//        }
-
         for (int i = 4 * playerCount; i < 8 * playerCount; i++) { // i starts from index after all cards have been distributed to players hand
             players[i % playerCount].addToHand(pack[i], i / playerCount - 4);
         }
     }
 
     public static void main(String[] args) throws IOException, InterruptedException{
-//        Scanner playerInput = new Scanner(System.in);
-//        System.out.println("Please enter the number of players:");
-//        int nPlayers = Integer.parseInt(playerInput.nextLine());
-//        playerInput.close();
+        Scanner playerInput = new Scanner(System.in);
+        System.out.println("Please enter the number of players:");
+        int nPlayers = Integer.parseInt(playerInput.nextLine());
+        playerInput.close();
 
         Scanner deckInput = new Scanner(System.in);
         System.out.println("Please enter location of pack to load:");
@@ -96,7 +81,6 @@ public class CardGameClass implements CardGame
         deckInput.close();
 
         CardGameClass cardGame = new CardGameClass(4,deckFile);
-//        Thread[] playerThreads = new Thread[cardGame.playerCount];
         for (int i = 0; i<cardGame.playerCount; i++){
             int n = i;
             Thread playerThread = new Thread(new Runnable() {
@@ -112,23 +96,23 @@ public class CardGameClass implements CardGame
 //                    }
                     //Checks that the thread isn't interrupted and that nobody has won the game. if both are true, the while loop begins
                     while (cardGame.playerWon <= 0) {
-                        Card discardCard;
                         cardGame.players[n].turnTaken = false;
-                        //Checks if the player meets the winning conditions
+                        // Checks if the player has won
                         if (cardGame.players[n].checkWin()) {
                             //Tells the game that this player is the winner
                             cardGame.playerWon = n + 1;
                             cardGame.players[n].turnTaken = true;
                             System.out.println("player " + (cardGame.playerWon) + " wins");
                         }
-                        //Checks that no player has won
+                        // Checks that no player has won within the cardGame instance
                         if (cardGame.playerWon <= 0) {
-                            //Tells the player to draw a card from their deck, and choose which card to discard
+                            // Tells the player to draw a card from their deck, and choose which card to discard
                             try {
+                                Card discardCard;
                                 discardCard = cardGame.players[n].draw(cardGame.decks[n].removeCard());
-                                //Tells the player to try to discard to the discard deck. If this fails, enter a while loop
-
+                                // Checks that no one has won and player has played a full turn (drawn and discarded a card successfully)
                                 while (cardGame.playerWon <= 0 && !cardGame.players[n].turnTaken) {
+                                    // Checks whether a player successfully discarded their chosen card to the next deck
                                     if (!cardGame.decks[(n + 1) % cardGame.playerCount].addCard(discardCard)) {
                                         cardGame.players[n].turnTaken = false;
 //                                        System.out.println("player " + (n+1) + " is stuck");
@@ -143,19 +127,20 @@ public class CardGameClass implements CardGame
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                         System.out.println("Unable to write to text file");
-                                    } catch (NullPointerException ignored) {
                                     }
                                 }
                             } catch (PackThresholdException ignored) {}
                         }
                     }
                     try {
+                        // Checks if deck can be logged without rollback (decks are complete), does so if true. If false, a player has initiated an illegal turn (a turn after another player has declared they have won)
                         if (!cardGame.decks[n].logDeck(false)) {
                             if (cardGame.players[n].turnTaken){
                                 cardGame.decks[n % cardGame.playerCount + 1].logDeck(true);
                             } else {
                                 cardGame.players[n].logTurn(cardGame.playerCount);
                             }
+                            // Rolls back their hand, undoing their illegal turn internally
                             cardGame.players[n].rollback();
                             cardGame.decks[n].logDeck(true);
                         } else {

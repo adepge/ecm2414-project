@@ -1,9 +1,8 @@
 public class Card {
-    private int cardID, value;
+    private int value;
 
-    public Card (int value, int cardID){
+    public Card (int value){
         this.value = value;
-        this.cardID = cardID;
     }
     public int getValue(){
         return value;

@@ -1,5 +1,5 @@
 import java.io.*;
-public class PlayerClass implements Serializable, Player{
+public class MockPlayerClass implements Serializable, Player{
     /** Player index, indicates their position relative to card decks */
     private int index;
     public boolean turnTaken;
@@ -17,8 +17,7 @@ public class PlayerClass implements Serializable, Player{
      * Constructor creates a {@link Player} object and assigns its index
      * @param index Unique numerical identifier for each player
      */
-    public PlayerClass(int index) throws IOException{
-
+    public MockPlayerClass(int index) throws IOException{
         this.index = index + 1;
         FileWriter out = new FileWriter("player" + this.index + "_output.txt", false);
         out.close();
@@ -31,6 +30,8 @@ public class PlayerClass implements Serializable, Player{
         }
         return handString;
     }
+
+    public void setHand(int[] cards){}
 
     public int getIndex(){
         return index;
@@ -81,8 +82,8 @@ public class PlayerClass implements Serializable, Player{
     }
 
     public void logTurn(int playerCount) throws IOException {
-        if (previousTurn != new String[3]){
-            FileWriter out = new FileWriter("player" + index + "_output.txt", true);
+        if (!(previousTurn[0] == null)){
+            FileWriter out = new FileWriter("/output/player" + index + "_output.txt", true);
             out.append(previousTurn[0]);
             out.append(previousTurn[1]);
             out.append(previousTurn[2]);
@@ -94,7 +95,7 @@ public class PlayerClass implements Serializable, Player{
     }
 
     public void logWin(int winningPlayer) throws IOException {
-        FileWriter out = new FileWriter("player" + index + "_output.txt", true);
+        FileWriter out = new FileWriter("/output/player" + index + "_output.txt", true);
         if (winningPlayer == index) {
             out.append("player " + (index) + " wins\n");
             out.append("player " + (index) + " exits\n");

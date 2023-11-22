@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 
 public class DeckClass implements Deck{
     private int index;
-    protected boolean rollback = false;
     protected boolean rolledBack = false;
     private Card[] oldContents;
     private ArrayBlockingQueue<Card> contents = new ArrayBlockingQueue<>(4);
