@@ -14,7 +14,7 @@ public class DeckClass implements Deck{
     public DeckClass(int index) throws IOException{
 
         this.index = index + 1;
-        FileWriter out = new FileWriter("deck" + this.index + "_output.txt", false);
+        FileWriter out = new FileWriter("/output/deck" + this.index + "_output.txt", false);
         out.close();
     }
 
@@ -28,11 +28,7 @@ public class DeckClass implements Deck{
     }
 
     public boolean addCard(Card c){
-//        Random random = new Random();
         return contents.offer(c);
-//        while (!contents.offer(c, random.nextInt(101), TimeUnit.MILLISECONDS)) {
-//                System.out.println("Waiting to add card...");
-//        }
     }
 
     public Card removeCard() throws PackThresholdException{
@@ -42,7 +38,7 @@ public class DeckClass implements Deck{
         oldContents = contents.toArray(new Card[4]);
         return contents.poll();}
 
-    public void clearContents(Card c){contents.clear();};
+    public void clearContents(Card c){contents.clear();}
 
 
     public boolean logDeck(boolean rollback) throws IOException {
@@ -63,7 +59,7 @@ public class DeckClass implements Deck{
             }
         }
             try {
-                FileWriter out = new FileWriter("deck" + index + "_output.txt", false);
+                FileWriter out = new FileWriter("/output/deck" + index + "_output.txt", false);
                 out.append("deck" + index + " contents: " + contentsToPrint[0].getValue() + " " + contentsToPrint[1].getValue() + " " + contentsToPrint[2].getValue() + " " + contentsToPrint[3].getValue() + "\n");
                 out.close();
                 return true;

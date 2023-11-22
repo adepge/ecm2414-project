@@ -49,7 +49,7 @@ public class CardGameClass implements CardGame
             throw new InvalidPackException("Pack length is too long"); // When text file lines > 8n
         }
         for (int i = 0; i < 8 * playerCount; i++) {
-            pack[i] = new Card(placeholder[i], i);
+            pack[i] = new Card(placeholder[i]);
         }
         return pack;
     }
@@ -60,7 +60,6 @@ public class CardGameClass implements CardGame
             DeckClass deckObject = new DeckClass(i);
             decks[i] = deckObject;
          }
-
         for (int i = 0; i < 4 * playerCount; i++) {
             decks[i % playerCount].addCard(pack[i]);
         }
@@ -77,7 +76,7 @@ public class CardGameClass implements CardGame
 
         Scanner deckInput = new Scanner(System.in);
         System.out.println("Please enter location of pack to load:");
-        String deckFile = deckInput.nextLine();
+        String deckFile = "/pack/" + deckInput.nextLine();
         deckInput.close();
 
         CardGameClass cardGame = new CardGameClass(4,deckFile);
@@ -86,20 +85,12 @@ public class CardGameClass implements CardGame
             Thread playerThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-
-//                    for (int i = 0;i<cardGame.playerCount;i++){
-//                        try {
-//                            cardGame.decks[i].logDeck();
-//                        } catch (IOException e){
-//                            e.printStackTrace();
-//                        }
-//                    }
-                    //Checks that the thread isn't interrupted and that nobody has won the game. if both are true, the while loop begins
+                    // Checks that the thread isn't interrupted and that nobody has won the game. The while loop begins
                     while (cardGame.playerWon <= 0) {
                         cardGame.players[n].turnTaken = false;
                         // Checks if the player has won
                         if (cardGame.players[n].checkWin()) {
-                            //Tells the game that this player is the winner
+                            // Tells the game that this player is the winner, and prints it to the console
                             cardGame.playerWon = n + 1;
                             cardGame.players[n].turnTaken = true;
                             System.out.println("player " + (cardGame.playerWon) + " wins");
@@ -115,7 +106,6 @@ public class CardGameClass implements CardGame
                                     // Checks whether a player successfully discarded their chosen card to the next deck
                                     if (!cardGame.decks[(n + 1) % cardGame.playerCount].addCard(discardCard)) {
                                         cardGame.players[n].turnTaken = false;
-//                                        System.out.println("player " + (n+1) + " is stuck");
                                     } else {
                                         cardGame.players[n].turnTaken = true;
                                     }
@@ -129,14 +119,16 @@ public class CardGameClass implements CardGame
                                         System.out.println("Unable to write to text file");
                                     }
                                 }
-                            } catch (PackThresholdException ignored) {}
+                            } catch (PackThresholdException e) {System.out.println("Deck is not 4 cards");}
                         }
                     }
+                    //Each player logs their game over state, as well as their decks'
                     try {
                         // Checks if deck can be logged without rollback (decks are complete), does so if true. If false, a player has initiated an illegal turn (a turn after another player has declared they have won)
                         if (!cardGame.decks[n].logDeck(false)) {
+                            // Check if player has completed their illegal turn
                             if (cardGame.players[n].turnTaken){
-                                cardGame.decks[n % cardGame.playerCount + 1].logDeck(true);
+                                cardGame.decks[(n % cardGame.playerCount) + 1].logDeck(true);
                             } else {
                                 cardGame.players[n].logTurn(cardGame.playerCount);
                             }
