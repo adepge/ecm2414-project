@@ -76,7 +76,7 @@ public class CardGameClass implements CardGame
 
         Scanner deckInput = new Scanner(System.in);
         System.out.println("Please enter location of pack to load:");
-        String deckFile = "/pack/" + deckInput.nextLine();
+        String deckFile = "pack/" + deckInput.nextLine();
         deckInput.close();
 
         CardGameClass cardGame = new CardGameClass(4,deckFile);

@@ -31,8 +31,6 @@ public class DeckClass implements Deck{
         oldContents = contents.toArray(new Card[4]);
         return contents.poll();}
 
-    public void clearContents(Card c){contents.clear();}
-
 
     public boolean logDeck(boolean rollback) throws IOException {
         if (rollback){
@@ -51,12 +49,13 @@ public class DeckClass implements Deck{
                 contentsToPrint[0] = oldContents[0];
             }
         }
-            try {
-                FileWriter out = new FileWriter("/output/deck" + index + "_output.txt", false);
-                out.append("deck" + index + " contents: " + contentsToPrint[0].getValue() + " " + contentsToPrint[1].getValue() + " " + contentsToPrint[2].getValue() + " " + contentsToPrint[3].getValue() + "\n");
-                out.close();
-                return true;
-            } catch (NullPointerException e){
-                return false;}
+        if (contentsToPrint[3] == null) {
+            return false;
+        }else {
+            FileWriter out = new FileWriter("output/deck" + index + "_output.txt", false);
+            out.append("deck" + index + " contents: " + contentsToPrint[0].getValue() + " " + contentsToPrint[1].getValue() + " " + contentsToPrint[2].getValue() + " " + contentsToPrint[3].getValue() + "\n");
+            out.close();
+            return true;
+        }
     }
 }

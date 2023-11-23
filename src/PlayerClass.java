@@ -82,7 +82,7 @@ public class PlayerClass implements Serializable, Player{
 
     public void logTurn(int playerCount) throws IOException {
         if (!(previousTurn[0] == null)){
-            FileWriter out = new FileWriter("/output/player" + index + "_output.txt", true);
+            FileWriter out = new FileWriter("output/player" + index + "_output.txt", true);
             out.append(previousTurn[0]);
             out.append(previousTurn[1]);
             out.append(previousTurn[2]);
@@ -94,7 +94,7 @@ public class PlayerClass implements Serializable, Player{
     }
 
     public void logWin(int winningPlayer) throws IOException {
-        FileWriter out = new FileWriter("/output/player" + index + "_output.txt", true);
+        FileWriter out = new FileWriter("output/player" + index + "_output.txt", true);
         if (winningPlayer == index) {
             out.append("player " + (index) + " wins\n");
             out.append("player " + (index) + " exits\n");
