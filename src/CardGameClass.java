@@ -69,10 +69,10 @@ public class CardGameClass implements CardGame
     }
 
     public static void main(String[] args) throws IOException, InterruptedException{
-        Scanner playerInput = new Scanner(System.in);
-        System.out.println("Please enter the number of players:");
-        int nPlayers = Integer.parseInt(playerInput.nextLine());
-        playerInput.close();
+//        Scanner playerInput = new Scanner(System.in);
+//        System.out.println("Please enter the number of players:");
+//        int nPlayers = Integer.parseInt(playerInput.nextLine());
+//        playerInput.close();
 
         Scanner deckInput = new Scanner(System.in);
         System.out.println("Please enter location of pack to load:");

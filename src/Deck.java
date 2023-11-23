@@ -13,8 +13,6 @@ public interface Deck{
 
         int getIndex();
         boolean addCard(Card c);
-        boolean checkForTurn();
         Card removeCard() throws PackThresholdException;
-        void clearContents(Card c);
         boolean logDeck(boolean rollback) throws IOException;
 }

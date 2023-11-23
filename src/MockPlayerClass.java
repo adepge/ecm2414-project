@@ -31,10 +31,26 @@ public class MockPlayerClass implements Serializable, Player{
         return handString;
     }
 
-    public void setHand(int[] cards){}
+    public void setHand(int[] cards){
+        for (int i = 0; i<4;i++){
+            hand[i] = new Card(cards[i]);
+        }
+    }
 
     public int getIndex(){
         return index;
+    }
+
+    public void setIndex(int index){
+        this.index = index;
+    }
+
+    public Card getNewCard(){
+        return newCard;
+    }
+
+    public Card getTrashCard(){
+        return trashCard;
     }
 
     public void addToHand(Card c, int position) {

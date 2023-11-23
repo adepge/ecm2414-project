@@ -4,7 +4,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 public class MockDeckClass implements Deck{
     private int index;
-    private ArrayBlockingQueue<Card> contents = new ArrayBlockingQueue<>(4);
+    public ArrayBlockingQueue<Card> contents = new ArrayBlockingQueue<>(4);
     protected boolean rolledBack = false;
     private Card[] oldContents;
     private Card[] contentsToPrint;
@@ -14,13 +14,22 @@ public class MockDeckClass implements Deck{
         this.index = index;
     }
 
-    public MockDeckClass(int[] cards){
-        for(int i=0; i < 4; i++){
-            contents.add(new Card(cards[i]));
-        }
+    public MockDeckClass(int index) throws IOException {
+        this.index = index + 1;
+        // Clear previous output instances of decks with this index
+        FileWriter out = new FileWriter("output/deck" + this.index + "_output.txt", false);
+        out.close();
     }
 
-    public void setDeckContents(int[] cards){
+    public Card[] getOldContents() {
+        return oldContents;
+    }
+
+    public Card[] getContentsToPrint() {
+        return contentsToPrint;
+    }
+
+    public void setDeckContents(int[] cards) {
         contents.clear();
         for(int i=0; i < 4; i++){
             contents.add(new Card(cards[i]));
