@@ -11,7 +11,6 @@ import java.util.concurrent.ArrayBlockingQueue;
  */
 public interface Deck{
 
-        int getIndex();
         boolean addCard(Card c);
         Card removeCard() throws PackThresholdException;
         boolean logDeck(boolean rollback) throws IOException;
