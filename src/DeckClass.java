@@ -12,13 +12,12 @@ public class DeckClass implements Deck{
     private Card[] contentsToPrint;
 
     public DeckClass(int index) throws IOException{
-        this.index = index + 1;
+        this.index = index;
         // Clear previous output instances of decks with this index
-        FileWriter out = new FileWriter("/output/deck" + this.index + "_output.txt", false);
+        FileWriter out = new FileWriter("output/deck" + this.index + "_output.txt", false);
         out.close();
     }
 
-    public int getIndex(){return index;};
 
     public boolean addCard(Card c){
         return contents.offer(c);

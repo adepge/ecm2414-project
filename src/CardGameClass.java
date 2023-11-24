@@ -18,18 +18,14 @@ public class CardGameClass implements CardGame
     private DeckClass[] decks;
     private int playerWon;
 
-    public CardGameClass(int playerCount, String deckFileName) throws IOException, InterruptedException{
+    public CardGameClass(int playerCount, String deckFileName) throws IOException, InvalidPackException{
         playerWon = 0;
         this.playerCount = playerCount;
         players = new PlayerClass[playerCount];
         for (int i = 0; i < playerCount; i++) {
-            players[i] = new PlayerClass(i);
+            players[i] = new PlayerClass(i+1);
         }
-        try {
-            distributeCards(loadPack(deckFileName));
-        } catch (InvalidPackException e) {
-            System.out.println(e.getMessage());
-        }
+        distributeCards(loadPack(deckFileName));
     }
 
     public Card[] loadPack(String filename) throws IOException, InvalidPackException {
@@ -57,7 +53,7 @@ public class CardGameClass implements CardGame
     private void distributeCards(Card[] pack) throws IOException{
         decks = new DeckClass[playerCount];
         for (int i=0;i<playerCount;i++){
-            DeckClass deckObject = new DeckClass(i);
+            DeckClass deckObject = new DeckClass(i+1);
             decks[i] = deckObject;
          }
         for (int i = 0; i < 4 * playerCount; i++) {
@@ -68,18 +64,17 @@ public class CardGameClass implements CardGame
         }
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException{
-//        Scanner playerInput = new Scanner(System.in);
-//        System.out.println("Please enter the number of players:");
-//        int nPlayers = Integer.parseInt(playerInput.nextLine());
-//        playerInput.close();
+    public static void main(String[] args) throws IOException, InterruptedException, InvalidPackException{
+        Scanner input = new Scanner(System.in);
+        System.out.println("Please enter the number of players:");
+        int nPlayers = Integer.parseInt(input.nextLine());
 
-        Scanner deckInput = new Scanner(System.in);
+        input = new Scanner(System.in);
         System.out.println("Please enter location of pack to load:");
-        String deckFile = "pack/" + deckInput.nextLine();
-        deckInput.close();
+        String deckFile = "pack/" + input.nextLine();
+        input.close();
 
-        CardGameClass cardGame = new CardGameClass(4,deckFile);
+        CardGameClass cardGame = new CardGameClass(nPlayers,deckFile);
         for (int i = 0; i<cardGame.playerCount; i++){
             int n = i;
             Thread playerThread = new Thread(new Runnable() {
@@ -128,7 +123,7 @@ public class CardGameClass implements CardGame
                         if (!cardGame.decks[n].logDeck(false)) {
                             // Check if player has completed their illegal turn
                             if (cardGame.players[n].turnTaken){
-                                cardGame.decks[(n % cardGame.playerCount) + 1].logDeck(true);
+                                cardGame.decks[n % cardGame.playerCount + 1].logDeck(true);
                             } else {
                                 cardGame.players[n].logTurn(cardGame.playerCount);
                             }

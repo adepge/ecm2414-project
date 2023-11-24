@@ -19,21 +19,9 @@ public class PlayerClass implements Serializable, Player{
      */
     public PlayerClass(int index) throws IOException{
 
-        this.index = index + 1;
-        FileWriter out = new FileWriter("player" + this.index + "_output.txt", false);
+        this.index = index;
+        FileWriter out = new FileWriter("output/player" + this.index + "_output.txt", false);
         out.close();
-    }
-
-    public String getHand(){
-        String handString = new String();
-        for (int i = 0; i<4;i++){
-            handString.concat(hand[i].getValue() + " ");
-        }
-        return handString;
-    }
-
-    public int getIndex(){
-        return index;
     }
 
     public void addToHand(Card c, int position) {
@@ -45,9 +33,9 @@ public class PlayerClass implements Serializable, Player{
         return chooseDiscard();
     }
 
-    public Card chooseDiscard() {
+    private Card chooseDiscard() {
         // Stores previous version of players hand
-        oldHand = hand;
+        oldHand = hand.clone();
         if (newCard.getValue() == index) {
             for (int i = 0; i < hand.length; i++) {
                 // Discards the first card in hand which its face value does not match the player's index
@@ -75,7 +63,7 @@ public class PlayerClass implements Serializable, Player{
 
     // Restores previous hand
     public void rollback(){
-        hand = oldHand;
+        hand = oldHand.clone();
         // Remember to remove this debug code later
         System.out.println("rollback occurred for player " + index);
     }

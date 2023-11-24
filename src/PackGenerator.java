@@ -7,8 +7,11 @@ public class PackGenerator {
     static ArrayList<Integer> pack;
     public static void generatePack(int players){
         pack = new ArrayList<>();
-        for(int i=0; i < players*8; i++){
-            pack.add(i % players + 1);
+        for(int i=1; i <= players*2; i++){
+            pack.add(i);
+            pack.add(i);
+            pack.add(i);
+            pack.add(i);
         }
         Collections.shuffle(pack);
         exportPack(pack, "standard");
@@ -45,6 +48,6 @@ public class PackGenerator {
     }
 
     public static void main(String[] args){
-        generatePack(10);
+        generatePack(6);
     }
 }

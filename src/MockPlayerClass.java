@@ -1,39 +1,37 @@
 import java.io.*;
+import java.lang.reflect.Array;
+
+/**
+ * Mock object class based on {@link PlayerClass}. This class has identical method implementations
+ * for all methods in {@link PlayerClass}, but additional methods to set fields in the object as
+ * well as different access modifiers
+ */
 public class MockPlayerClass implements Serializable, Player{
     /** Player index, indicates their position relative to card decks */
-    private int index;
-    public boolean turnTaken;
-    private String[] previousTurn = new String[3];
+    public int index;
+    public String[] previousTurn = new String[3];
 
     /** Player's hand of 4 cards */
-    private Card[] hand = new Card[4];
-    private Card[] oldHand = new Card[4];
+    public Card[] hand = new Card[4];
+    public Card[] oldHand = new Card[4];
 
     /** Card */
-    private Card newCard;
-    private Card trashCard;
+    public Card newCard;
+    public Card trashCard;
 
     /**
      * Constructor creates a {@link Player} object and assigns its index
      * @param index Unique numerical identifier for each player
      */
     public MockPlayerClass(int index) throws IOException{
-        this.index = index + 1;
-        FileWriter out = new FileWriter("player" + this.index + "_output.txt", false);
+        this.index = index;
+        FileWriter out = new FileWriter("output/player" + this.index + "_output.txt", false);
         out.close();
-    }
-
-    public String getHand(){
-        String handString = new String();
-        for (int i = 0; i<4;i++){
-            handString.concat(hand[i].getValue() + " ");
-        }
-        return handString;
     }
 
     public void setHand(int[] cards){
         for (int i = 0; i<4;i++){
-            hand[i] = new Card(cards[i]);
+            addToHand(new Card(cards[i]), i);
         }
     }
 
@@ -64,7 +62,7 @@ public class MockPlayerClass implements Serializable, Player{
 
     public Card chooseDiscard() {
         // Stores previous version of players hand
-        oldHand = hand;
+        oldHand = hand.clone();
         if (newCard.getValue() == index) {
             for (int i = 0; i < hand.length; i++) {
                 // Discards the first card in hand which its face value does not match the player's index
@@ -92,14 +90,14 @@ public class MockPlayerClass implements Serializable, Player{
 
     // Restores previous hand
     public void rollback(){
-        hand = oldHand;
+        hand = oldHand.clone();
         // Remember to remove this debug code later
         System.out.println("rollback occurred for player " + index);
     }
 
     public void logTurn(int playerCount) throws IOException {
         if (!(previousTurn[0] == null)){
-            FileWriter out = new FileWriter("/output/player" + index + "_output.txt", true);
+            FileWriter out = new FileWriter("output/player" + index + "_output.txt", true);
             out.append(previousTurn[0]);
             out.append(previousTurn[1]);
             out.append(previousTurn[2]);
@@ -111,7 +109,7 @@ public class MockPlayerClass implements Serializable, Player{
     }
 
     public void logWin(int winningPlayer) throws IOException {
-        FileWriter out = new FileWriter("/output/player" + index + "_output.txt", true);
+        FileWriter out = new FileWriter("output/player" + index + "_output.txt", true);
         if (winningPlayer == index) {
             out.append("player " + (index) + " wins\n");
             out.append("player " + (index) + " exits\n");

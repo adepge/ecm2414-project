@@ -2,6 +2,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 
+/**
+ * Mock object class based on {@link DeckClass}. This class has identical method implementations
+ * for all methods in {@link DeckClass}, but additional methods to set fields in the object
+ */
 public class MockDeckClass implements Deck {
     private int index;
     public ArrayBlockingQueue<Card> contents = new ArrayBlockingQueue<>(4);
@@ -9,16 +13,12 @@ public class MockDeckClass implements Deck {
     private Card[] oldContents;
     private Card[] contentsToPrint;
 
-    public int getIndex() {
-        return index;
-    }
-
     public void setIndex(int index) {
         this.index = index;
     }
 
     public MockDeckClass(int index) throws IOException {
-        this.index = index + 1;
+        this.index = index;
         // Clear previous output instances of decks with this index
         FileWriter out = new FileWriter("output/deck" + this.index + "_output.txt", false);
         out.close();
