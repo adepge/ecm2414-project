@@ -1,6 +1,6 @@
 import java.io.File;
-import java.util.Scanner;
 import java.io.IOException;
+import java.util.Scanner;
 
 /**
  * The CardGameClass is the concrete implementation of the {@link CardGame} interface.
@@ -11,19 +11,19 @@ import java.io.IOException;
  * @author Ben Ellison
  * @version 11-11-2023
  */
-public class CardGameClass implements CardGame
+public class MockCardGameClass implements CardGame
 {
     int playerCount;
-    private PlayerClass[] players;
-    private DeckClass[] decks;
-    private int playerWon;
+    public MockPlayerClass[] players;
+    public MockDeckClass[] decks;
+    public int playerWon;
 
-    public CardGameClass(int playerCount, String deckFileName) throws IOException, InvalidPackException{
+    public MockCardGameClass(int playerCount, String deckFileName) throws IOException, InvalidPackException{
         playerWon = 0;
         this.playerCount = playerCount;
-        players = new PlayerClass[playerCount];
+        players = new MockPlayerClass[playerCount];
         for (int i = 0; i < playerCount; i++) {
-            players[i] = new PlayerClass(i+1);
+            players[i] = new MockPlayerClass(i+1);
         }
         distributeCards(loadPack(deckFileName));
     }
@@ -51,32 +51,23 @@ public class CardGameClass implements CardGame
     }
 
     private void distributeCards(Card[] pack) throws IOException{
-        decks = new DeckClass[playerCount];
+        decks = new MockDeckClass[playerCount];
         for (int i=0;i<playerCount;i++){
-            DeckClass deckObject = new DeckClass(i+1);
+            MockDeckClass deckObject = new MockDeckClass(i+1);
             decks[i] = deckObject;
-         }
+        }
         // Distribute cards to players in a round-robin fashion first
         for (int i = 0; i < 4 * playerCount; i++) {
-            decks[i % playerCount].addCard(pack[i]);
+            players[i % playerCount].addToHand(pack[i], i/playerCount);
         }
         // Then distributes cards to decks in a round-robin fashion
         for (int i = 4 * playerCount; i < 8 * playerCount; i++) { // i starts from index after all cards have been distributed to players hand
-            players[i % playerCount].addToHand(pack[i], i/playerCount - 4);
+            decks[i % playerCount].addCard(pack[i]);
         }
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException, InvalidPackException{
-        Scanner input = new Scanner(System.in);
-        System.out.println("Please enter the number of players:");
-        int nPlayers = Integer.parseInt(input.nextLine());
-
-        input = new Scanner(System.in);
-        System.out.println("Please enter location of pack to load:");
-        String deckFile = "pack/" + input.nextLine();
-        input.close();
-
-        CardGameClass cardGame = new CardGameClass(nPlayers,deckFile);
+    public static void runGame(int nPlayers, String deckFile) throws IOException, InterruptedException, InvalidPackException{
+        MockCardGameClass cardGame = new MockCardGameClass(nPlayers,deckFile);
         for (int i = 0; i<cardGame.playerCount; i++){
             int n = i;
             Thread playerThread = new Thread(new Runnable() {

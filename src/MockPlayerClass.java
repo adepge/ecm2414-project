@@ -9,6 +9,7 @@ import java.lang.reflect.Array;
 public class MockPlayerClass implements Serializable, Player{
     /** Player index, indicates their position relative to card decks */
     public int index;
+    public boolean turnTaken;
     public String[] previousTurn = new String[3];
 
     /** Player's hand of 4 cards */
