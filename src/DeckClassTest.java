@@ -26,8 +26,8 @@ public class DeckClassTest {
 
             // Invoke the method
             assert deck.addCard(new Card(2)); // Assert that the card can be offered to the deck when there is sufficient capacity
-            assert deck.contents.peek() != null; // Assert that the head of the queue has the Card object
-            assertEquals(deck.contents.peek().getValue(), 2);
+            assertNotNull(deck.contents.peek()); // Assert that the head of the queue has the Card object
+            assertEquals(2, deck.contents.peek().getValue());
         } catch (IOException e) {
             e.printStackTrace();
             assert false;
@@ -68,18 +68,18 @@ public class DeckClassTest {
             TrashCard = deck.removeCard();
 
             // Asserts there is one space free in the deck
-            assertEquals(deck.contents.remainingCapacity(), 1);
-            assertEquals(TrashCard.getValue(), 1);
+            assertEquals(1, deck.contents.remainingCapacity());
+            assertEquals(1, TrashCard.getValue());
 
             // Asserts that the oldContents variable is assigned properly
-            assertEquals(deck.getOldContents()[0].getValue(), 1);
-            assertEquals(deck.getOldContents()[1].getValue(), 2);
-            assertEquals(deck.getOldContents()[2].getValue(), 3);
-            assertEquals(deck.getOldContents()[3].getValue(), 4);
+            assertEquals(1, deck.getOldContents()[0].getValue());
+            assertEquals(2, deck.getOldContents()[1].getValue());
+            assertEquals(3, deck.getOldContents()[2].getValue());
+            assertEquals(4, deck.getOldContents()[3].getValue());
 
             // Asserts next card in deck is 2
-            assert deck.contents.peek() != null;
-            assertEquals(deck.contents.peek().getValue(), 2);
+            assertNotNull(deck.contents.peek());
+            assertEquals(2, deck.contents.peek().getValue());
         } catch (IOException | PackThresholdException e) {
             e.printStackTrace();
             assert false;
@@ -107,7 +107,6 @@ public class DeckClassTest {
             assert false;
         } catch (PackThresholdException e) {
             System.out.println("PackThresholdException thrown as expected");
-
         } finally {
             deck = null;
         }
