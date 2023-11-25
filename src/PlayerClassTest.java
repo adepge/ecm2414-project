@@ -43,8 +43,8 @@ public class PlayerClassTest {
         try {
             player = new MockPlayerClass(1);
             player.setHand(new int[]{1, 1, 1, 1});
-            assertEquals(player.draw(new Card(1)).getValue(), 1);
-            assertEquals(player.newCard.getValue(), 1);
+            assertEquals(1, player.draw(new Card(1)).getValue());
+            assertEquals(1, player.newCard.getValue());
         } catch (IOException e) {
             e.printStackTrace();
             assert false;
@@ -63,21 +63,21 @@ public class PlayerClassTest {
             assertNull(player.trashCard);
 
             //Method is invoked by calling the draw() method
-            assertEquals(player.draw(new Card(1)).getValue(), 2);
+            assertEquals(2, player.draw(new Card(1)).getValue());
 
-            assertEquals(player.oldHand[0].getValue(), 1);
-            assertEquals(player.oldHand[1].getValue(), 2);
-            assertEquals(player.oldHand[2].getValue(), 3);
-            assertEquals(player.oldHand[3].getValue(), 4);
+            assertEquals(1, player.oldHand[0].getValue());
+            assertEquals(2, player.oldHand[1].getValue());
+            assertEquals(3, player.oldHand[2].getValue());
+            assertEquals(4, player.oldHand[3].getValue());
 
-            assertEquals(player.newCard.getValue(), 1);
-            assertEquals(player.trashCard.getValue(), 2);
-            assertEquals(player.hand[1].getValue(), 1);
-            assertEquals(player.draw(new Card(8)).getValue(), 8);
-            assertEquals(player.hand[0].getValue(), 1);
-            assertEquals(player.hand[1].getValue(), 1);
-            assertEquals(player.hand[2].getValue(), 3);
-            assertEquals(player.hand[3].getValue(), 4);
+            assertEquals(1, player.newCard.getValue());
+            assertEquals(2, player.trashCard.getValue());
+            assertEquals(1, player.hand[1].getValue());
+            assertEquals(8, player.draw(new Card(8)).getValue());
+            assertEquals(1, player.hand[0].getValue());
+            assertEquals(1, player.hand[1].getValue());
+            assertEquals(3, player.hand[2].getValue());
+            assertEquals(4, player.hand[3].getValue());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -123,19 +123,19 @@ public class PlayerClassTest {
         try {
             player = new MockPlayerClass(1);
             player.setHand(new int[]{1, 2, 3, 4});
-            assertEquals(player.draw(new Card(1)).getValue(), 2);
+            assertEquals(2, player.draw(new Card(1)).getValue());
 
-            assertEquals(player.hand[0].getValue(), 1);
-            assertEquals(player.hand[1].getValue(), 1);
-            assertEquals(player.hand[2].getValue(), 3);
-            assertEquals(player.hand[3].getValue(), 4);
+            assertEquals(1, player.hand[0].getValue());
+            assertEquals(1, player.hand[1].getValue());
+            assertEquals(3, player.hand[2].getValue());
+            assertEquals(4, player.hand[3].getValue());
             player.rollback();
             assertEquals(player.oldHand, player.hand);
 
-            assertEquals(player.hand[0].getValue(), 1);
-            assertEquals(player.hand[1].getValue(), 2);
-            assertEquals(player.hand[2].getValue(), 3);
-            assertEquals(player.hand[3].getValue(), 4);
+            assertEquals(1, player.hand[0].getValue());
+            assertEquals(2, player.hand[1].getValue());
+            assertEquals(3, player.hand[2].getValue());
+            assertEquals(4, player.hand[3].getValue());
         } catch (IOException e) {
             e.printStackTrace();
             assert false;
@@ -156,14 +156,14 @@ public class PlayerClassTest {
             player.addToHand(new Card(4), 3);
             player.draw(new Card(1));
             player.logTurn(2);
-            assertEquals(player.previousTurn[0], ("player 1 draws a 1 from deck 1\n"));
-            assertEquals(player.previousTurn[1], ("player 1 discards a 2 to deck 2\n"));
-            assertEquals(player.previousTurn[2], ("player 1 current hand is 1 1 3 4\n"));
+            assertEquals("player 1 draws a 1 from deck 1\n", player.previousTurn[0]);
+            assertEquals("player 1 discards a 2 to deck 2\n", player.previousTurn[1]);
+            assertEquals("player 1 current hand is 1 1 3 4\n", player.previousTurn[2]);
             player.draw(new Card(1));
             player.logTurn(2);
-            assertEquals(player.previousTurn[0], ("player 1 draws a 1 from deck 1\n"));
-            assertEquals(player.previousTurn[1], ("player 1 discards a 3 to deck 2\n"));
-            assertEquals(player.previousTurn[2], ("player 1 current hand is 1 1 1 4\n"));
+            assertEquals("player 1 draws a 1 from deck 1\n", player.previousTurn[0]);
+            assertEquals("player 1 discards a 3 to deck 2\n", player.previousTurn[1]);
+            assertEquals("player 1 current hand is 1 1 1 4\n", player.previousTurn[2]);
         } catch (IOException e) {
             e.printStackTrace();
             assert false;

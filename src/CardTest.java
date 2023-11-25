@@ -7,12 +7,12 @@ public class CardTest {
     @Test
     public void getValue() {
         Card card = new Card(1);
-        assert card.getValue() == 1;
+        assertEquals(1, card.getValue());
     }
 
     @Test
     public void getMaxIntegerValue() {
         Card card = new Card(2147483647);
-        assert card.getValue() == 2147483647;
+        assertEquals(2147483647, card.getValue());
     }
 }
