@@ -58,11 +58,11 @@ public class CardGameClass implements CardGame
          }
         // Distribute cards to players in a round-robin fashion first
         for (int i = 0; i < 4 * playerCount; i++) {
-            decks[i % playerCount].addCard(pack[i]);
+            players[i % playerCount].addToHand(pack[i], i/playerCount);
         }
         // Then distributes cards to decks in a round-robin fashion
         for (int i = 4 * playerCount; i < 8 * playerCount; i++) { // i starts from index after all cards have been distributed to players hand
-            players[i % playerCount].addToHand(pack[i], i/playerCount - 4);
+            decks[i % playerCount].addCard(pack[i]);
         }
     }
 

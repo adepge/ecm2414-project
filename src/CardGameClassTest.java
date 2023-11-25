@@ -22,7 +22,7 @@ public class CardGameClassTest {
         MockCardGameClass cardGame;
         try{
             // Invoke a new card game of 4 players instance with pack2.txt (all cards are ordered by size)
-            cardGame = new MockCardGameClass(4,"pack/pack2.txt");
+            cardGame = new MockCardGameClass(4,"pack2.txt");
 
             assertEquals(4, cardGame.players.length);
             assertEquals(4, cardGame.decks.length);
@@ -33,19 +33,18 @@ public class CardGameClassTest {
                 assertEquals(4,cardGame.decks[i].contents.size());
 
                 Card[] deckArray = cardGame.decks[i].contents.toArray(new Card[4]);
-                for (int j = 0; j < 4; j++){
                     // Asserts the contents of each player's hand have been distributed in round-robin fashion
-                    assertEquals(1,cardGame.players[i].hand[j].getValue());
-                    assertEquals(2,cardGame.players[i].hand[j].getValue());
-                    assertEquals(3,cardGame.players[i].hand[j].getValue());
-                    assertEquals(4,cardGame.players[i].hand[j].getValue());
+                    assertEquals(1,cardGame.players[i].hand[0].getValue());
+                    assertEquals(2,cardGame.players[i].hand[1].getValue());
+                    assertEquals(3,cardGame.players[i].hand[2].getValue());
+                    assertEquals(4,cardGame.players[i].hand[3].getValue());
 
                     // Asserts the contents of each deck are assigned in round-robin fashion
-                    assertEquals(5,deckArray[j].getValue());
-                    assertEquals(6,deckArray[j].getValue());
-                    assertEquals(7,deckArray[j].getValue());
-                    assertEquals(8,deckArray[j].getValue());
-                }
+                    assertEquals(5,deckArray[0].getValue());
+                    assertEquals(6,deckArray[1].getValue());
+                    assertEquals(7,deckArray[2].getValue());
+                    assertEquals(8,deckArray[3].getValue());
+
             }
             // Invokes the method only
             Card[] pack = cardGame.loadPack("pack.txt");

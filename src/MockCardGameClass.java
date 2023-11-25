@@ -31,7 +31,7 @@ public class MockCardGameClass implements CardGame
     public Card[] loadPack(String filename) throws IOException, InvalidPackException {
         int[] placeholder = new int[8 * playerCount]; // Placeholder array to hold integers read from text file
         Card[] pack = new Card[8 * playerCount];  // Card array to hold all 8n cards
-        File obj = new File(filename);
+        File obj = new File("pack/" + filename);
         Scanner myReader = new Scanner(obj);
         for (int i = 0; i < 8 * playerCount; i++) {
             if (myReader.hasNextLine()) {
@@ -65,6 +65,7 @@ public class MockCardGameClass implements CardGame
             decks[i % playerCount].addCard(pack[i]);
         }
     }
+
 
     public static void runGame(int nPlayers, String deckFile) throws IOException, InterruptedException, InvalidPackException{
         MockCardGameClass cardGame = new MockCardGameClass(nPlayers,deckFile);
