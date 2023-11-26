@@ -1,8 +1,12 @@
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.function.ThrowingRunnable;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
@@ -44,14 +48,76 @@ public class CardGameClassTest {
                     assertEquals(6,deckArray[1].getValue());
                     assertEquals(7,deckArray[2].getValue());
                     assertEquals(8,deckArray[3].getValue());
-
             }
             // Invokes the method only
             Card[] pack = cardGame.loadPack("pack.txt");
             assertEquals(32, pack.length);
-
-
         } catch (IOException | InvalidPackException e){
+            e.printStackTrace();
+            assert false;
+        } finally {
+            cardGame = null;
+        }
+    }
+
+    @Test(expected = FileNotFoundException.class)
+    public void packNotFound() throws IOException {
+        CardGameClass cardGame;
+        try{
+            cardGame = new CardGameClass(4,"pack/pack_not_found.txt");
+        } catch (InvalidPackException e){
+            e.printStackTrace();
+            assert false;
+        } finally {
+            cardGame = null;
+        }
+    }
+
+    @Test(expected = InvalidPackException.class)
+    public void packTooLong() throws InvalidPackException {
+        CardGameClass cardGame;
+        try{
+            cardGame = new CardGameClass(4,"pack/long_pack.txt");
+        } catch (IOException e){
+            e.printStackTrace();
+            assert false;
+        } finally {
+            cardGame = null;
+        }
+    }
+
+    @Test(expected = InvalidPackException.class)
+    public void packTooShort() throws InvalidPackException {
+        CardGameClass cardGame;
+        try{
+            cardGame = new CardGameClass(4,"pack/short_pack.txt");
+        } catch (IOException e){
+            e.printStackTrace();
+            assert false;
+        } finally {
+            cardGame = null;
+        }
+    }
+
+    @Test(expected = InvalidPackException.class)
+    public void packNegativeInt() throws InvalidPackException {
+        CardGameClass cardGame;
+        try{
+            cardGame = new CardGameClass(4,"pack/negative_integer.txt");
+        } catch (IOException e){
+            e.printStackTrace();
+            assert false;
+        } finally {
+            cardGame = null;
+        }
+    }
+
+    @Test(expected = InvalidPackException.class)
+    public void packInvalidValues() throws InvalidPackException {
+        CardGameClass cardGame;
+        try{
+            cardGame = new CardGameClass(4,"pack/invalid_pack.txt");
+        } catch (IOException e){
             e.printStackTrace();
             assert false;
         } finally {

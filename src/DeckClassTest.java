@@ -38,21 +38,15 @@ public class DeckClassTest {
     @Test
     public void addCardOverflow() {
         DeckClass deck;
-        try {
-            deck = new DeckClass(1);
-            deck.addCard(new Card(2));
-            deck.addCard(new Card(2));
-            deck.addCard(new Card(2));
-            deck.addCard(new Card(2));
+        deck = new DeckClass(1);
+        deck.addCard(new Card(2));
+        deck.addCard(new Card(2));
+        deck.addCard(new Card(2));
+        deck.addCard(new Card(2));
 
-            // Invoke the target method
-            assert !deck.addCard(new Card(2)); // Assert that the card cannot be offered because the deck is full
-        } catch (IOException e){
-            e.printStackTrace();
-            assert false;
-        } finally {
-            deck = null;
-        }
+        // Invoke the target method
+        assert !deck.addCard(new Card(2)); // Assert that the card cannot be offered because the deck is full
+        deck = null;
     }
 
     @Test
@@ -90,26 +84,18 @@ public class DeckClassTest {
         }
     }
 
-    @Test
-    public void removeCardUnderflow() {
+    @Test(expected = PackThresholdException.class)
+    public void removeCardUnderflow() throws PackThresholdException{
         DeckClass deck;
-        try {
-            deck = new DeckClass(1);
-            deck.addCard(new Card(1));
-            deck.addCard(new Card(1));
-            deck.addCard(new Card(1));
+        deck = new DeckClass(1);
+        deck.addCard(new Card(1));
+        deck.addCard(new Card(1));
+        deck.addCard(new Card(1));
 
-            // Invokes the method tested
-            assertThrows(PackThresholdException.class, (ThrowingRunnable) deck.removeCard());
-            // Expects PackThresholdException thrown
-        } catch (IOException e){
-            e.printStackTrace();
-            assert false;
-        } catch (PackThresholdException e) {
-            System.out.println("PackThresholdException thrown as expected");
-        } finally {
-            deck = null;
-        }
+        // Invokes the method tested
+        deck.removeCard();
+        // Expects PackThresholdException thrown
+        deck = null;
     }
 
     @Test

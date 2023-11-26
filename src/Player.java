@@ -26,6 +26,9 @@ public interface Player {
      */
     boolean checkWin();
 
+    /**
+     * Rolls back the player's hand if they have completed an illegal turn
+     */
     void rollback();
 
     /**
@@ -33,9 +36,12 @@ public interface Player {
      * with the name player{index}_output.txt
      *
      * @param playerCount total number of players in game
-     * @throws IOException file error
      */
-    void logTurn(int playerCount) throws IOException;
+    void logTurn(int playerCount);
 
-    void logWin(int winningPlayer) throws IOException;
+    /**
+     * Appends winning turn message to the player's log files
+     * @param winningPlayer index of player who has won
+     */
+    void logWin(int winningPlayer);
 }

@@ -48,6 +48,7 @@ public class MockCardGameClass implements CardGame
             pack[i] = new Card(placeholder[i]);
         }
         return pack;
+
     }
 
     private void distributeCards(Card[] pack) throws IOException{

@@ -96,31 +96,43 @@ public class MockPlayerClass implements Serializable, Player{
         System.out.println("rollback occurred for player " + index);
     }
 
-    public void logTurn(int playerCount) throws IOException {
-        if (!(previousTurn[0] == null)){
+    public void logTurn(int playerCount) {
+        try {
             FileWriter out = new FileWriter("output/player" + index + "_output.txt", true);
-            out.append(previousTurn[0]);
-            out.append(previousTurn[1]);
-            out.append(previousTurn[2]);
+            out.append(String.format("""
+                            player %1$d draws a %2$d from deck %1$d
+                            player %1$d discards a %3$d to deck %4$d
+                            player %1$d current hand is %5$d %6$d %7$d %8$d
+                            """,
+                    index, newCard.getValue(), trashCard.getValue(), index % playerCount + 1, hand[0].getValue(), hand[1].getValue(), hand[2].getValue(), hand[3].getValue()));
             out.close();
+        } catch (IOException e){
+            System.out.println(e.getMessage());
         }
-        previousTurn[0] = ("player " + (index) + " draws a " + (newCard.getValue()) + " from deck " + (index) + "\n");
-        previousTurn[1] = ("player " + (index) + " discards a " + (trashCard.getValue()) + " to deck " + (index % playerCount + 1) + "\n");
-        previousTurn[2] = ("player " + (index) + " current hand is " + (hand[0].getValue()) + " " + (hand[1].getValue()) + " " + (hand[2].getValue()) + " " + (hand[3].getValue()) + "\n");
     }
 
-    public void logWin(int winningPlayer) throws IOException {
-        FileWriter out = new FileWriter("output/player" + index + "_output.txt", true);
-        if (winningPlayer == index) {
-            out.append("player " + (index) + " wins\n");
-            out.append("player " + (index) + " exits\n");
-            out.append("player " + (index) + " hand: " + (hand[0].getValue()) + " " + (hand[1].getValue()) + " " + (hand[2].getValue()) + " " + (hand[3].getValue()) + "\n");
-        } else {
-            out.append("player " + (winningPlayer) + " has informed player " + (index) + " that player " + (winningPlayer) + " has won\n");
-            out.append("player " + (index) + " exits\n");
-            out.append("player " + (index) + " hand: " + (hand[0].getValue()) + " " + (hand[1].getValue()) + " " + (hand[2].getValue()) + " " + (hand[3].getValue()) + "\n");
+    public void logWin(int winningPlayer) {
+        try {
+            FileWriter out = new FileWriter("output/player" + index + "_output.txt", true);
+            if (winningPlayer == index) {
+                out.append(String.format("""
+                                player %1$d wins
+                                player %1$d exits
+                                player %1$d final hand: %2$d %3$d %4$d %5$d
+                                """,
+                        index, hand[0].getValue(), hand[1].getValue(), hand[2].getValue(), hand[3].getValue()));
+            } else {
+                out.append(String.format("""
+                                player %2$d has informed player %1$d that player %2$d has won
+                                player %1$d exits
+                                player %1$d final hand: %3$d %4$d %5$d %6$d
+                                """,
+                        index, winningPlayer, hand[0].getValue(), hand[1].getValue(), hand[2].getValue(), hand[3].getValue()));
+            }
+            out.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
-        out.close();
     }
 
 }

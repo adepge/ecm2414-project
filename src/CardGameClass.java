@@ -35,8 +35,15 @@ public class CardGameClass implements CardGame
         Scanner myReader = new Scanner(obj);
         for (int i = 0; i < 8 * playerCount; i++) {
             if (myReader.hasNextLine()) {
-                int data = Integer.parseInt(myReader.nextLine());
-                placeholder[i] = data;
+                try {
+                    int data = Integer.parseInt(myReader.nextLine());
+                    if(data < 0){
+                        throw new InvalidPackException("Pack contains negative integers");
+                    }
+                    placeholder[i] = data;
+                } catch (NumberFormatException e){
+                    throw new InvalidPackException("Pack contains non-integer types");
+                }
             } else {
                 throw new InvalidPackException("Pack length is too short"); // When text file lines < 8n
             }
@@ -50,12 +57,17 @@ public class CardGameClass implements CardGame
         return pack;
     }
 
-    private void distributeCards(Card[] pack) throws IOException{
+    /**
+     * Method to distribute a valid pack of cards into player's hands
+     * and then into decks in a round-robin fashion
+     * @param pack Array of {@link Card} objects
+     */
+    private void distributeCards(Card[] pack){
         decks = new DeckClass[playerCount];
         for (int i=0;i<playerCount;i++){
             DeckClass deckObject = new DeckClass(i+1);
             decks[i] = deckObject;
-         }
+        }
         // Distribute cards to players in a round-robin fashion first
         for (int i = 0; i < 4 * playerCount; i++) {
             players[i % playerCount].addToHand(pack[i], i/playerCount);
@@ -72,7 +84,7 @@ public class CardGameClass implements CardGame
         int nPlayers = Integer.parseInt(input.nextLine());
 
         input = new Scanner(System.in);
-        System.out.println("Please enter location of pack to load:");
+        System.out.println("Please enter pack file (in pack directory) to load:");
         String deckFile = "pack/" + input.nextLine();
         input.close();
 
@@ -109,18 +121,12 @@ public class CardGameClass implements CardGame
                                 }
                                 //Logs player's turn to their txt file.
                                 if (cardGame.players[n].turnTaken && cardGame.playerWon<=0) {
-                                    try {
                                         cardGame.players[n].logTurn(cardGame.playerCount);
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                        System.out.println("Unable to write to text file");
-                                    }
                                 }
                             } catch (PackThresholdException e) {System.out.println("Deck is not 4 cards");}
                         }
                     }
-                    //Each player logs their game over state, as well as their decks'
-                    try {
+                    // Each player logs their game over state, as well as their decks'
                         // Checks if deck can be logged without rollback (decks are complete), does so if true. If false, a player has initiated an illegal turn (a turn after another player has declared they have won)
                         if (!cardGame.decks[n].logDeck(false)) {
                             // Check if player has completed their illegal turn
@@ -136,13 +142,8 @@ public class CardGameClass implements CardGame
                             cardGame.players[n].logTurn(cardGame.playerCount);
                         }
                         cardGame.players[n].logWin(cardGame.playerWon);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        System.out.println("failed to log win");
-                    }
                 }
             });
-            playerThread.join();
             playerThread.start();
         }
     }

@@ -62,19 +62,17 @@ public class MockDeckClass implements Deck {
         contents.clear();
     }
 
-    public boolean logDeck(boolean rollback) throws IOException {
-        if (rollback) {
-            if (contents.remainingCapacity() > 0) {
-                rolledBack = true;
-            }
+    public boolean logDeck(boolean rollback){
+        if (rollback){
+            if (contents.remainingCapacity() > 0){ rolledBack = true; }
             contentsToPrint = oldContents;
         } else {
             if (contentsToPrint == null) {
                 contentsToPrint = contents.toArray(new Card[4]);
             } else {
+                // Shifts all elements by 1
                 for (int i = 2; i > -1; i--) {
                     contentsToPrint[i + 1] = contentsToPrint[i];
-
                 }
                 contentsToPrint[0] = oldContents[0];
             }
@@ -82,9 +80,15 @@ public class MockDeckClass implements Deck {
         if (contentsToPrint[3] == null) {
             return false;
         } else {
-            FileWriter out = new FileWriter("output/deck" + index + "_output.txt", false);
-            out.append("deck" + index + " contents: " + contentsToPrint[0].getValue() + " " + contentsToPrint[1].getValue() + " " + contentsToPrint[2].getValue() + " " + contentsToPrint[3].getValue() + "\n");
-            out.close();
+            try {
+                FileWriter out = new FileWriter("output/deck" + index + "_output.txt", false);
+                out.append(String.format("deck %1$d contents: %2$d %3$d %4$d %5$d ",
+                        index,contentsToPrint[0].getValue(),contentsToPrint[1].getValue(),contentsToPrint[2].getValue(),contentsToPrint[3].getValue()));
+                out.close();
+            } catch (IOException e){
+                // Exception handled if FileWriter fails
+                System.out.println(e.getMessage());
+            }
             return true;
         }
     }
