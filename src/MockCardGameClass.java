@@ -102,37 +102,27 @@ public class MockCardGameClass implements CardGame
                                 }
                                 //Logs player's turn to their txt file.
                                 if (cardGame.players[n].turnTaken && cardGame.playerWon<=0) {
-                                    try {
                                         cardGame.players[n].logTurn(cardGame.playerCount);
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                        System.out.println("Unable to write to text file");
-                                    }
                                 }
                             } catch (PackThresholdException e) {System.out.println("Deck is not 4 cards");}
                         }
                     }
-                    //Each player logs their game over state, as well as their decks'
-                    try {
-                        // Checks if deck can be logged without rollback (decks are complete), does so if true. If false, a player has initiated an illegal turn (a turn after another player has declared they have won)
-                        if (!cardGame.decks[n].logDeck(false)) {
-                            // Check if player has completed their illegal turn
-                            if (cardGame.players[n].turnTaken){
-                                cardGame.decks[n % cardGame.playerCount + 1].logDeck(true);
-                            } else {
-                                cardGame.players[n].logTurn(cardGame.playerCount);
-                            }
-                            // Rolls back their hand, undoing their illegal turn internally
-                            cardGame.players[n].rollback();
-                            cardGame.decks[n].logDeck(true);
+                    // Each player logs their game over state, as well as their decks'
+                    // Checks if deck can be logged without rollback (decks are complete), does so if true. If false, a player has initiated an illegal turn (a turn after another player has declared they have won)
+                    if (!cardGame.decks[n].logDeck(false)) {
+                        // Check if player has completed their illegal turn
+                        if (cardGame.players[n].turnTaken){
+                            cardGame.decks[n % cardGame.playerCount + 1].logDeck(true);
                         } else {
                             cardGame.players[n].logTurn(cardGame.playerCount);
                         }
-                        cardGame.players[n].logWin(cardGame.playerWon);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        System.out.println("failed to log win");
+                        // Rolls back their hand, undoing their illegal turn internally
+                        cardGame.players[n].rollback();
+                        cardGame.decks[n].logDeck(true);
+                    } else {
+                        cardGame.players[n].logTurn(cardGame.playerCount);
                     }
+                    cardGame.players[n].logWin(cardGame.playerWon);
                 }
             });
             playerThread.join();
