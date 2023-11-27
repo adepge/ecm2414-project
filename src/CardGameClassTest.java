@@ -64,7 +64,7 @@ public class CardGameClassTest {
     public void packNotFound() throws IOException {
         CardGameClass cardGame;
         try{
-            cardGame = new CardGameClass(4,"pack/pack_not_found.txt");
+            cardGame = new CardGameClass(4,"pack_not_found.txt");
         } catch (InvalidPackException e){
             e.printStackTrace();
             assert false;
@@ -77,7 +77,7 @@ public class CardGameClassTest {
     public void packTooLong() throws InvalidPackException {
         CardGameClass cardGame;
         try{
-            cardGame = new CardGameClass(4,"pack/long_pack.txt");
+            cardGame = new CardGameClass(4,"long_pack.txt");
         } catch (IOException e){
             e.printStackTrace();
             assert false;
@@ -90,7 +90,7 @@ public class CardGameClassTest {
     public void packTooShort() throws InvalidPackException {
         CardGameClass cardGame;
         try{
-            cardGame = new CardGameClass(4,"pack/short_pack.txt");
+            cardGame = new CardGameClass(4,"short_pack.txt");
         } catch (IOException e){
             e.printStackTrace();
             assert false;
@@ -103,7 +103,7 @@ public class CardGameClassTest {
     public void packNegativeInt() throws InvalidPackException {
         CardGameClass cardGame;
         try{
-            cardGame = new CardGameClass(4,"pack/negative_integer.txt");
+            cardGame = new CardGameClass(4,"negative_integer.txt");
         } catch (IOException e){
             e.printStackTrace();
             assert false;
@@ -116,7 +116,7 @@ public class CardGameClassTest {
     public void packInvalidValues() throws InvalidPackException {
         CardGameClass cardGame;
         try{
-            cardGame = new CardGameClass(4,"pack/invalid_pack.txt");
+            cardGame = new CardGameClass(4,"invalid_pack.txt");
         } catch (IOException e){
             e.printStackTrace();
             assert false;
