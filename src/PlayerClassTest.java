@@ -3,6 +3,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.io.File;
 
 import static org.junit.Assert.*;
 
@@ -15,6 +16,8 @@ public class PlayerClassTest {
     @After
     public void tearDown(){
         System.gc();
+        File outputfile = new File("output/player1_test_output.txt");
+        outputfile.delete();
     }
 
     @Test
@@ -73,10 +76,11 @@ public class PlayerClassTest {
             assertEquals(1, player.newCard.getValue());
             assertEquals(2, player.trashCard.getValue());
             assertEquals(1, player.hand[1].getValue());
-            assertEquals(8, player.draw(new Card(8)).getValue());
+
+            assertEquals(3, player.draw(new Card(8)).getValue());
             assertEquals(1, player.hand[0].getValue());
             assertEquals(1, player.hand[1].getValue());
-            assertEquals(3, player.hand[2].getValue());
+            assertEquals(8, player.hand[2].getValue());
             assertEquals(4, player.hand[3].getValue());
 
         } catch (IOException e) {
@@ -156,14 +160,19 @@ public class PlayerClassTest {
             player.addToHand(new Card(4), 3);
             player.draw(new Card(1));
             player.logTurn(2);
-            assertEquals("player 1 draws a 1 from deck 1\n", player.previousTurn[0]);
-            assertEquals("player 1 discards a 2 to deck 2\n", player.previousTurn[1]);
-            assertEquals("player 1 current hand is 1 1 3 4\n", player.previousTurn[2]);
+            assertEquals("""
+            player 1 draws a 1 from deck 1
+            player 1 discards a 2 to deck 2
+            player 1 current hand is 1 1 3 4
+            """
+            , player.previousTurn[0]);
             player.draw(new Card(1));
             player.logTurn(2);
-            assertEquals("player 1 draws a 1 from deck 1\n", player.previousTurn[0]);
-            assertEquals("player 1 discards a 3 to deck 2\n", player.previousTurn[1]);
-            assertEquals("player 1 current hand is 1 1 1 4\n", player.previousTurn[2]);
+            assertEquals("""
+            player 1 draws a 1 from deck 1
+            player 1 discards a 3 to deck 2
+            player 1 current hand is 1 1 1 4
+            """, player.previousTurn[0]);
         } catch (IOException e) {
             e.printStackTrace();
             assert false;

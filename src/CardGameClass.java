@@ -31,7 +31,7 @@ public class CardGameClass implements CardGame
     public Card[] loadPack(String filename) throws IOException, InvalidPackException {
         int[] placeholder = new int[8 * playerCount]; // Placeholder array to hold integers read from text file
         Card[] pack = new Card[8 * playerCount];  // Card array to hold all 8n cards
-        File obj = new File(filename);
+        File obj = new File("pack/" +filename);
         Scanner myReader = new Scanner(obj);
         for (int i = 0; i < 8 * playerCount; i++) {
             if (myReader.hasNextLine()) {
@@ -78,19 +78,20 @@ public class CardGameClass implements CardGame
         }
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException, InvalidPackException{
+    public static void main(String[] args) throws IOException, InvalidPackException{
         Scanner input = new Scanner(System.in);
         System.out.println("Please enter the number of players:");
         int nPlayers = Integer.parseInt(input.nextLine());
 
         input = new Scanner(System.in);
         System.out.println("Please enter pack file (in pack directory) to load:");
-        String deckFile = "pack/" + input.nextLine();
+        String deckFile = input.nextLine();
         input.close();
 
         CardGameClass cardGame = new CardGameClass(nPlayers,deckFile);
         for (int i = 0; i<cardGame.playerCount; i++){
             int n = i;
+            cardGame.players[n].logInitialHand();
             Thread playerThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -123,7 +124,7 @@ public class CardGameClass implements CardGame
                                 if (cardGame.players[n].turnTaken && cardGame.playerWon<=0) {
                                         cardGame.players[n].logTurn(cardGame.playerCount);
                                 }
-                            } catch (PackThresholdException e) {System.out.println("Deck is not 4 cards");}
+                            } catch (PackThresholdException ignore) {}
                         }
                     }
                     // Each player logs their game over state, as well as their decks'

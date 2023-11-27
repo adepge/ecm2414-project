@@ -3,6 +3,7 @@ public class PlayerClass implements Serializable, Player{
     /** Player index, indicates their position relative to card decks */
     private int index;
     public boolean turnTaken;
+    private String[] previousTurn = new String[1];
 
     /** Player's hand of 4 cards */
     private Card[] hand = new Card[4];
@@ -23,6 +24,17 @@ public class PlayerClass implements Serializable, Player{
         out.close();
     }
 
+    public void logInitialHand(){
+        try {
+            FileWriter out = new FileWriter("output/player" + index + "_output.txt", true);
+            out.append(String.format("player %1$d initial hand %2$d %3$d %4$d %5$d\n",
+                   index, hand[0].getValue(), hand[1].getValue(), hand[2].getValue(), hand[3].getValue()));
+            out.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public void addToHand(Card c, int position) {
         hand[position] = c;
     }
@@ -35,7 +47,7 @@ public class PlayerClass implements Serializable, Player{
     private Card chooseDiscard() {
         // Stores previous version of players hand
         oldHand = hand.clone();
-        if (newCard.getValue() == index) {
+//        if (newCard.getValue() == index) {
             for (int i = 0; i < hand.length; i++) {
                 // Discards the first card in hand which its face value does not match the player's index
                 if (hand[i].getValue() != index) {
@@ -44,7 +56,7 @@ public class PlayerClass implements Serializable, Player{
                     return trashCard;
                 }
             }
-        }
+//        }
         trashCard = newCard;
         return trashCard;
     }
@@ -61,22 +73,23 @@ public class PlayerClass implements Serializable, Player{
     }
 
     // Restores previous hand
-    public void rollback(){
-        hand = oldHand.clone();
-        // Remember to remove this debug code later
-        System.out.println("rollback occurred for player " + index);
-    }
+    public void rollback(){hand = oldHand.clone();}
 
     public void logTurn(int playerCount) {
         try {
-            FileWriter out = new FileWriter("output/player" + index + "_output.txt", true);
-            out.append(String.format("""
-                            player %1$d draws a %2$d from deck %1$d
-                            player %1$d discards a %3$d to deck %4$d
-                            player %1$d current hand is %5$d %6$d %7$d %8$d
-                            """,
-                    index, newCard.getValue(), trashCard.getValue(), index % playerCount + 1, hand[0].getValue(), hand[1].getValue(), hand[2].getValue(), hand[3].getValue()));
-            out.close();
+            if(previousTurn[0] != null) {
+                FileWriter out = new FileWriter("output/player" + index + "_output.txt", true);
+                out.append(previousTurn[0]);
+                out.close();
+            }
+            if (newCard != null) {
+                previousTurn[0] = String.format("""
+                                player %1$d draws a %2$d from deck %1$d
+                                player %1$d discards a %3$d to deck %4$d
+                                player %1$d current hand is %5$d %6$d %7$d %8$d
+                                """,
+                        index, newCard.getValue(), trashCard.getValue(), index % playerCount + 1, hand[0].getValue(), hand[1].getValue(), hand[2].getValue(), hand[3].getValue());
+            }
         } catch (IOException e){
             System.out.println(e.getMessage());
         }

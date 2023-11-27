@@ -37,6 +37,14 @@ public interface Player {
      *
      * @param playerCount total number of players in game
      */
+    void logInitialHand();
+
+    /**
+     * Method which logs the players actions into a text file
+     * with the name player{index}_output.txt
+     *
+     * @param playerCount total number of players in game
+     */
     void logTurn(int playerCount);
 
     /**

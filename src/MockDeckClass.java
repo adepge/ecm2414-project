@@ -20,7 +20,7 @@ public class MockDeckClass implements Deck {
     public MockDeckClass(int index) throws IOException {
         this.index = index;
         // Clear previous output instances of decks with this index
-        FileWriter out = new FileWriter("output/deck" + this.index + "_output.txt", false);
+        FileWriter out = new FileWriter("output/deck" + this.index + "_test_output.txt", false);
         out.close();
     }
 
@@ -81,7 +81,7 @@ public class MockDeckClass implements Deck {
             return false;
         } else {
             try {
-                FileWriter out = new FileWriter("output/deck" + index + "_output.txt", false);
+                FileWriter out = new FileWriter("output/deck" + index + "_test_output.txt", false);
                 out.append(String.format("deck %1$d contents: %2$d %3$d %4$d %5$d ",
                         index,contentsToPrint[0].getValue(),contentsToPrint[1].getValue(),contentsToPrint[2].getValue(),contentsToPrint[3].getValue()));
                 out.close();
