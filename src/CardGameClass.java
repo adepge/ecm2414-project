@@ -22,8 +22,10 @@ public class CardGameClass implements CardGame
         playerWon = 0;
         this.playerCount = playerCount;
         players = new PlayerClass[playerCount];
+        decks = new DeckClass[playerCount];
         for (int i = 0; i < playerCount; i++) {
             players[i] = new PlayerClass(i+1);
+            decks[i] = new DeckClass(i+1);
         }
         distributeCards(loadPack(deckFileName));
     }
@@ -63,11 +65,6 @@ public class CardGameClass implements CardGame
      * @param pack Array of {@link Card} objects
      */
     private void distributeCards(Card[] pack){
-        decks = new DeckClass[playerCount];
-        for (int i=0;i<playerCount;i++){
-            DeckClass deckObject = new DeckClass(i+1);
-            decks[i] = deckObject;
-        }
         // Distribute cards to players in a round-robin fashion first
         for (int i = 0; i < 4 * playerCount; i++) {
             players[i % playerCount].addToHand(pack[i], i/playerCount);

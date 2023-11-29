@@ -22,8 +22,10 @@ public class MockCardGameClass implements CardGame
         playerWon = 0;
         this.playerCount = playerCount;
         players = new MockPlayerClass[playerCount];
+        decks = new MockDeckClass[playerCount];
         for (int i = 0; i < playerCount; i++) {
             players[i] = new MockPlayerClass(i+1);
+            decks[i] = new MockDeckClass(i+1);
         }
         distributeCards(loadPack(deckFileName));
     }
@@ -51,12 +53,7 @@ public class MockCardGameClass implements CardGame
 
     }
 
-    private void distributeCards(Card[] pack) throws IOException{
-        decks = new MockDeckClass[playerCount];
-        for (int i=0;i<playerCount;i++){
-            MockDeckClass deckObject = new MockDeckClass(i+1);
-            decks[i] = deckObject;
-        }
+    private void distributeCards(Card[] pack){
         // Distribute cards to players in a round-robin fashion first
         for (int i = 0; i < 4 * playerCount; i++) {
             players[i % playerCount].addToHand(pack[i], i/playerCount);

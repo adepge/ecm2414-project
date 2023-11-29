@@ -22,14 +22,26 @@ public class CardGameClassTest {
     }
 
     @Test
+    public void participantInstantiationTest() {
+        MockCardGameClass cardGame;
+        try{
+            cardGame = new MockCardGameClass(4,"pack2.txt");
+            assertEquals(4, cardGame.players.length);
+            assertEquals(4, cardGame.decks.length);
+        } catch (IOException | InvalidPackException e){
+            e.printStackTrace();
+            assert false;
+        } finally {
+            cardGame = null;
+        }
+
+    }
+    @Test
     public void packDistributionTest() {
         MockCardGameClass cardGame;
         try{
             // Invoke a new card game of 4 players instance with pack2.txt (all cards are ordered by size)
             cardGame = new MockCardGameClass(4,"pack2.txt");
-
-            assertEquals(4, cardGame.players.length);
-            assertEquals(4, cardGame.decks.length);
 
             // Makes sure that every player hand and deck has the same number of cards (4)
             for(int i = 0; i < 4; i++){
