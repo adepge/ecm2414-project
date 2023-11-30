@@ -136,4 +136,93 @@ public class CardGameClassTest {
             cardGame = null;
         }
     }
+
+    @Test
+    public void onePlayerGame(){
+        MockCardGameClass cardGame;
+        try{
+            cardGame = new MockCardGameClass(1,"one_player_pack.txt");
+
+            assertEquals(1,cardGame.players[0].hand[0].getValue());
+            assertEquals(1,cardGame.players[0].hand[1].getValue());
+            assertEquals(1,cardGame.players[0].hand[2].getValue());
+            assertEquals(1,cardGame.players[0].hand[3].getValue());
+        } catch (IOException | InvalidPackException e){
+            e.printStackTrace();
+            assert false;
+        } finally {
+            cardGame = null;
+        }
+    }
+
+    @Test
+    public void packOneWinner(){
+        MockCardGameClass cardGame;
+        try{
+            cardGame = new MockCardGameClass(4,"one_winner.txt");
+        } catch (IOException | InvalidPackException e){
+            e.printStackTrace();
+            assert false;
+        } finally {
+            cardGame = null;
+        }
+    }
+
+    @Test
+    public void gameResultsReliability(){
+        MockCardGameClass cardGame;
+        try{
+            for (int i = 0; i<15; i++) {
+                cardGame = new MockCardGameClass(4, "pack2.txt");
+                cardGame.runGame(4, "pack2.txt");
+                Thread.sleep(50);
+
+                assertEquals(1, cardGame.players[0].hand[0].getValue());
+                assertEquals(1, cardGame.players[0].hand[1].getValue());
+                assertEquals(1, cardGame.players[0].hand[2].getValue());
+                assertEquals(1, cardGame.players[0].hand[3].getValue());
+                assertEquals(2, cardGame.players[1].hand[0].getValue());
+                assertEquals(2, cardGame.players[1].hand[1].getValue());
+                assertEquals(4, cardGame.players[1].hand[2].getValue());
+                assertEquals(4, cardGame.players[1].hand[3].getValue());
+                assertEquals(3, cardGame.players[2].hand[0].getValue());
+                assertEquals(3, cardGame.players[2].hand[1].getValue());
+                assertEquals(3, cardGame.players[2].hand[2].getValue());
+                assertEquals(4, cardGame.players[2].hand[3].getValue());
+                assertEquals(2, cardGame.players[3].hand[0].getValue());
+                assertEquals(2, cardGame.players[3].hand[1].getValue());
+                assertEquals(3, cardGame.players[3].hand[2].getValue());
+                assertEquals(4, cardGame.players[3].hand[3].getValue());
+            }
+        } catch (IOException | InvalidPackException | InterruptedException e){
+            e.printStackTrace();
+            assert false;
+        } finally {
+            cardGame = null;
+        }
+    }
+
+    // Yeah?
+    // Mind if I run a game? I've made a non-denomination pack thanks:)) //oh true, I forgot about that fact
+    // just compilation errors lol
+    // now? great :)
+
+
+    // I mean if you feel it is simple enough to implement, go ahead, though I'll say it is a bit late in the development scheme of things
+    // Alright sounds good
+    //whoops let the last game run a bit too long
+    // you know Ben, could you do me a favour?
+
+    // could you pull up your local instance of this project, and run it as many times as you can and see if the rollback issue happens there?
+    // I kind of feel like this issue tends to happen on my pc
+
+    //sure thing
+
+
+    // so our results are still not fully relaiable, unfortunately.
+    //the last game we ran had an error
+    //and I'm thinking, what if instead of all the clever shit i've done so far to implement rollback
+    //we just have an attribute for each player which keeps track of how many turns players have taken in order to roll them back?
+
+
 }

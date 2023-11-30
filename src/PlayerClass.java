@@ -73,7 +73,21 @@ public class PlayerClass implements Serializable, Player{
     }
 
     // Restores previous hand
-    public void rollback(){hand = oldHand.clone();}
+    public void rollback(){
+        hand = oldHand.clone();
+        System.out.println("rolled back!");
+    }
+
+    public void logInitialHand(){
+        try {
+            FileWriter out = new FileWriter("output/player" + index + "_output.txt", true);
+            out.append(String.format("player %1$d initial hand %2$d %3$d %4$d %5$d\n",
+                    index, hand[0].getValue(), hand[1].getValue(), hand[2].getValue(), hand[3].getValue()));
+            out.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     public void logTurn(int playerCount) {
         try {

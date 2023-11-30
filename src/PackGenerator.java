@@ -52,6 +52,6 @@ public class PackGenerator {
     }
 
     public static void main(String[] args){
-        generatePack(6);
+        generatePack(500);
     }
 }
