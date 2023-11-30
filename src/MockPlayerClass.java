@@ -10,6 +10,7 @@ public class MockPlayerClass implements Serializable, Player{
     /** Player index, indicates their position relative to card decks */
     public int index;
     public boolean turnTaken;
+    public int turnCount;
     public String[] previousTurn = new String[3];
 
     /** Player's hand of 4 cards */
@@ -26,6 +27,7 @@ public class MockPlayerClass implements Serializable, Player{
      */
     public MockPlayerClass(int index) throws IOException{
         this.index = index;
+        turnCount = 0;
         FileWriter out = new FileWriter("output/player" + this.index + "_test_output.txt", false);
         out.close();
     }

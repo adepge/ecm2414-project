@@ -65,7 +65,7 @@ public class MockCardGameClass implements CardGame
     }
 
 
-    public static void runGame(int nPlayers, String deckFile) throws IOException, InterruptedException, InvalidPackException{
+    public void runGame(int nPlayers, String deckFile) throws IOException, InterruptedException, InvalidPackException{
         MockCardGameClass cardGame = new MockCardGameClass(nPlayers,deckFile);
         for (int i = 0; i<cardGame.playerCount; i++){
             int n = i;
@@ -88,6 +88,7 @@ public class MockCardGameClass implements CardGame
                             try {
                                 Card discardCard;
                                 discardCard = cardGame.players[n].draw(cardGame.decks[n].removeCard());
+                                cardGame.players[n].turnCount += 1;
                                 // Checks that no one has won and player has played a full turn (drawn and discarded a card successfully)
                                 while (cardGame.playerWon <= 0 && !cardGame.players[n].turnTaken) {
                                     // Checks whether a player successfully discarded their chosen card to the next deck
@@ -99,14 +100,14 @@ public class MockCardGameClass implements CardGame
                                 }
                                 //Logs player's turn to their txt file.
                                 if (cardGame.players[n].turnTaken && cardGame.playerWon<=0) {
-                                        cardGame.players[n].logTurn(cardGame.playerCount);
+                                    cardGame.players[n].logTurn(cardGame.playerCount);
                                 }
-                            } catch (PackThresholdException e) {System.out.println("Deck is not 4 cards");}
+                            } catch (PackThresholdException ignored) {}
                         }
                     }
                     // Each player logs their game over state, as well as their decks'
                     // Checks if deck can be logged without rollback (decks are complete), does so if true. If false, a player has initiated an illegal turn (a turn after another player has declared they have won)
-                    if (!cardGame.decks[n].logDeck(false)) {
+                    if (cardGame.players[n].turnCount > cardGame.players[cardGame.playerWon-1].turnCount) {
                         // Check if player has completed their illegal turn
                         if (cardGame.players[n].turnTaken){
                             cardGame.decks[n % cardGame.playerCount + 1].logDeck(true);
@@ -118,6 +119,7 @@ public class MockCardGameClass implements CardGame
                         cardGame.decks[n].logDeck(true);
                     } else {
                         cardGame.players[n].logTurn(cardGame.playerCount);
+                        cardGame.decks[n].logDeck(false);
                     }
                     cardGame.players[n].logWin(cardGame.playerWon);
                 }
@@ -125,5 +127,10 @@ public class MockCardGameClass implements CardGame
             playerThread.join();
             playerThread.start();
         }
+        this.playerCount = cardGame.playerCount;
+        this.players = cardGame.players.clone();
+        this.playerWon = cardGame.playerWon;
+        this.decks = cardGame.decks.clone();
     }
+
 }

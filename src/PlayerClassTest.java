@@ -150,6 +150,24 @@ public class PlayerClassTest {
     }
 
     @Test
+    public void logInitialHand() {
+        PlayerClass player;
+        try{
+            player = new PlayerClass(1);
+            player.addToHand(new Card(1), 0);
+            player.addToHand(new Card(2), 1);
+            player.addToHand(new Card(3), 2);
+            player.addToHand(new Card(4), 3);
+            player.logInitialHand();
+        } catch (IOException e) {
+            e.printStackTrace();
+            assert false;
+        } finally {
+            player = null;
+        }
+    }
+
+    @Test
     public void logTurn() {
         MockPlayerClass player;
         try {

@@ -3,6 +3,7 @@ public class PlayerClass implements Serializable, Player{
     /** Player index, indicates their position relative to card decks */
     private int index;
     public boolean turnTaken;
+    public int turnCount;
     private String[] previousTurn = new String[1];
 
     /** Player's hand of 4 cards */
@@ -22,17 +23,6 @@ public class PlayerClass implements Serializable, Player{
         this.index = index;
         FileWriter out = new FileWriter("output/player" + this.index + "_output.txt", false);
         out.close();
-    }
-
-    public void logInitialHand(){
-        try {
-            FileWriter out = new FileWriter("output/player" + index + "_output.txt", true);
-            out.append(String.format("player %1$d initial hand %2$d %3$d %4$d %5$d\n",
-                   index, hand[0].getValue(), hand[1].getValue(), hand[2].getValue(), hand[3].getValue()));
-            out.close();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
     }
 
     public void addToHand(Card c, int position) {
